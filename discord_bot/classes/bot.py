@@ -11,4 +11,4 @@ class Bot(commands.Bot):
         print(f"Online as {self.user}")
 
     async def setup_hook(self):
-        await self.tree.sync()bot
+        await self.tree.sync()
