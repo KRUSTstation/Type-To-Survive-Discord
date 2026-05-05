@@ -1,15 +1,6 @@
-import discord
+from .classes.bot import Bot    
+from core.config import DISCORD_TOKEN as TOKEN
 
-import os
-from dotenv import load_dotenv
-
-from .classes.bot import Bot
-
-# Cogs
-
-
-load_dotenv()
-TOKEN = os.getenv("BOT_TOKEN")
 if not TOKEN:
     raise RuntimeError("DISCORD_TOKEN not set in environment (.env)")
 
