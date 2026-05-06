@@ -11,4 +11,3 @@ async def main():
         await bot.load_extension("discord_bot.cogs.BasicCmds")
         
         await bot.start(TOKEN)
-        print("Online")

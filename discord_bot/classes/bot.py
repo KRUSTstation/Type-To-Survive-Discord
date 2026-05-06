@@ -5,7 +5,7 @@ intents = discord.Intents.all()
 
 class Bot(commands.Bot):
     def __init__(self):
-        super().__init__(command_prefix='!', intents=intents)
+        super().__init__(command_prefix='!', intents=intents, help_command=None)
 
     async def on_ready(self):
         print(f"Online as {self.user}")

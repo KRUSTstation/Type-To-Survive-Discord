@@ -3,13 +3,22 @@ from discord.ext import commands
 from discord import app_commands
 
 class BasicCmds(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     @app_commands.command(name="ping", description="Check latency")
-    async def ping(self, interaction):
+    async def ping(self, interaction: discord.Interaction):
         latency = round(self.bot.latency * 1000)
         await interaction.response.send_message(f"Pong! Latency: `{latency}ms` ", ephemeral=True)
+    
+    @app_commands.command(name='help', description="Need info on some commands?")
+    async def help(self, interaction: discord.Interaction):
+        embed = discord.Embed(title='Help', color=discord.Color.red())
+
+        for cmd in self.bot.tree.get_commands():
+            embed.add_field(name=f"`/{cmd.name}`", value=cmd.description or "No description", inline=False)
+
+        await interaction.response.send_message(embed=embed, ephemeral=True)
 
 async def setup(bot):   
     await bot.add_cog(BasicCmds(bot))
