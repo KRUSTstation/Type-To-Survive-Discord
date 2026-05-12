@@ -2,6 +2,8 @@ import discord
 from discord.ext import commands
 from discord import app_commands
 
+from random import choice
+
 class BasicCmds(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -19,6 +21,12 @@ class BasicCmds(commands.Cog):
             embed.add_field(name=f"`/{cmd.name}`", value=cmd.description or "No description", inline=False)
 
         await interaction.response.send_message(embed=embed, ephemeral=True)
+
+    @app_commands.command(name='sus', description="suspicious")
+    async def sus(self, interaction: discord.Interaction):
+        from core.cmds.sus_emoticons import emoticons
+
+        await interaction.response.send_message(choice(emoticons))
 
 async def setup(bot):   
     await bot.add_cog(BasicCmds(bot))
