@@ -7,4 +7,6 @@ load_dotenv()
 DEBUG = os.getenv('DEBUG') == '1'
 
 # Discord
+OWNER_USERID = 767714143146868756
+RESTRICTED_CMDS = {'suggestions_setup'}
 DISCORD_TOKEN = os.getenv('BOT_TOKEN')
