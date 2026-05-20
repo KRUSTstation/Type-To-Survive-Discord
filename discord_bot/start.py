@@ -1,3 +1,5 @@
+import discord
+
 from .classes.bot import Bot    
 from core.config import DISCORD_TOKEN as TOKEN
 
