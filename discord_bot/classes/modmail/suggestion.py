@@ -28,28 +28,50 @@ class ApproveButton(PersistentView):
 
     @discord.ui.button(label='Approve', style=discord.ButtonStyle.success, custom_id='approve_button_persistent')
     async def approve_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.defer()
+
         author, title, description = await self.get_embed_info(interaction)
 
         for child in self.children:
             child.disabled = True
-        await interaction.response.edit_message(view=self)
 
+        forum = interaction.guild.get_channel(SUGGESTION_FORUM)
+
+        await forum.create_thread(
+            name=f'{title.replace('`', '')} by {author}',
+            content=description.replace('`', '')
+        )
+
+        user_id = int(author.replace("<@", "").replace("!", "").replace(">", ""))
+        user = await interaction.client.fetch_user(user_id)
+
+        await user.send(f'Your suggestion of title {title} has been put up on the forum')
+
+        await interaction.response.edit_message(view=self)
         await interaction.followup.send((
             f'Suggestion by {author} has been put up by {interaction.user.mention}\n'
-            f'Title: `{title}`'
+            f'Title: {title}'
         ))
     
     @discord.ui.button(label='Discard', style=discord.ButtonStyle.blurple, custom_id='discard_button_persistent')
     async def discard_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
+        await interaction.response.defer()
+
         author, title, description = await self.get_embed_info(interaction)
 
         for child in self.children:
             child.disabled = True
-        await interaction.response.edit_message(view=self)
+
+        user_id = int(author.replace("<@", "").replace("!", "").replace(">", ""))
+        user = await interaction.client.fetch_user(user_id)
+
+        await user.send(f'Your suggestion of title {title} has been discarded')
+
+        await interaction.edit_original_response(view=self)
 
         await interaction.followup.send((
             f'Suggestion by {author} has been discarded by {interaction.user.mention}\n'
-            f'Title: `{title}`'
+            f'Title: {title}'
         ))
 
 class SuggestModal(discord.ui.Modal, title="Suggestion"):
