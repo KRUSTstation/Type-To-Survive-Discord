@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
 
+from core.persist import register_all
+
 intents = discord.Intents.all()
 
 class Bot(commands.Bot):
@@ -17,3 +19,4 @@ class Bot(commands.Bot):
 
     async def setup_hook(self):
         await self.tree.sync()
+        register_all(self)
