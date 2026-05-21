@@ -37,10 +37,13 @@ class ApproveButton(PersistentView):
 
         forum = interaction.guild.get_channel(SUGGESTION_FORUM)
 
-        await forum.create_thread(
+        thread = await forum.create_thread(
             name=f'{title.replace('`', '')} by {author}',
-            content=description.replace('`', '')
+            content=f'{author}:\n{description.replace('`', '')}'
         )
+
+        await thread.message.add_reaction(':star:')
+        # await thread.message.add_reaction('') # maybe downvote ovver here
 
         user_id = int(author.replace("<@", "").replace("!", "").replace(">", ""))
         user = await interaction.client.fetch_user(user_id)
