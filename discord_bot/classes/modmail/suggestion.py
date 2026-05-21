@@ -42,7 +42,7 @@ class ApproveButton(PersistentView):
             content=f'{author}:\n{description.replace('`', '')}'
         )
 
-        await thread.message.add_reaction(':star:')
+        await thread.message.add_reaction('⭐')
         # await thread.message.add_reaction('') # maybe downvote ovver here
 
         user_id = int(author.replace("<@", "").replace("!", "").replace(">", ""))
