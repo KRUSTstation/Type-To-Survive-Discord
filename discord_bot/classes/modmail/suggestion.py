@@ -47,7 +47,7 @@ class ApproveButton(PersistentView):
 
         await user.send(f'Your suggestion of title {title} has been put up on the forum')
 
-        await interaction.response.edit_message(view=self)
+        await interaction.edit_original_response(view=self)
         await interaction.followup.send((
             f'Suggestion by {author} has been put up by {interaction.user.mention}\n'
             f'Title: {title}'
