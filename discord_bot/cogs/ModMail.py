@@ -3,11 +3,15 @@ from discord.ext import commands
 from discord import app_commands
 
 from core.restrictions import owner_only
-from discord_bot.classes.modmail import suggestion
+from discord_bot.classes.modmail import suggestion, report
 
 class ModMail(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+
+    @app_commands.command(name='close_ticket', description='Closes the current ticket')
+    async def close_ticket(self, interaction: discord.Interaction):
+        await report.close_ticket(interaction)
 
     @app_commands.command(name='suggestion_setup', description='Sets up the suggestion prompt')
     @owner_only()
@@ -23,6 +27,22 @@ class ModMail(commands.Cog):
         embed.add_field(name='What do I suggest?', value='_Any improvements/mechanics in the discord server or in game_', inline=False)
 
         await channel.send(embed=embed, view=suggestion.SuggestButton())
+        await interaction.response.send_message("Done!", ephemeral=True)
+
+    @app_commands.command(name='report_setup', description='Sets up the reporting prompt')
+    @owner_only()
+    async def report_setup(self, interaction: discord.Interaction):
+        channel = interaction.channel
+
+        embed = discord.Embed(title='Make a suggestion', color=discord.Color.blurple())
+        embed.add_field(name='Instructions', value=(
+                        '1. _Press the `Report` button_\n'
+                        '2. _A ticket will open for you_\n'
+                        '3. _Interact with the assigned admin and explain your report_'
+        ), inline=False)
+
+        embed.add_field(name='What do I report?', value='_Report any abuse admins/users and bugs in either the discord server or game_', inline=False)
+        await channel.send(embed=embed, view=report.ReportButton())
         await interaction.response.send_message("Done!", ephemeral=True)
 
 async def setup(bot):   
