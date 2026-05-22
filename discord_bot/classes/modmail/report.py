@@ -15,7 +15,7 @@ async def is_ticket(interaction: discord.Interaction):
 
 async def close_ticket(interaction):
     if not await is_ticket(interaction):
-        await interaction.response.send_message(content='This is not a ticket', ephemeral=True)
+        await interaction.response.send_message(content='This is not a ticket!', ephemeral=True)
         return
     
     await interaction.response.send_message(content='Are you sure? You will lose all data in this ticket.', view=Confirm(), ephemeral=True)
@@ -27,7 +27,7 @@ class Confirm(discord.ui.View):
     @discord.ui.button(label='Confirm', style=discord.ButtonStyle.success)
     async def confirm_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
         if not await is_ticket(interaction):
-            await interaction.response.send_message(content='This is not a ticket', ephemeral=True)
+            await interaction.response.send_message(content='This is not a ticket!', ephemeral=True)
             return
         
         channel = interaction.channel
@@ -59,6 +59,8 @@ class ReportButton(PersistentView):
         category = guild.get_channel(TICKET_CATEGORY)
         mod_role = guild.get_role(MODERATOR_ROLE)
         assigned_mod = choice([user for user in mod_role.members])
+        while assigned_mod == user:
+            assigned_mod = choice([user for user in mod_role.members])
 
         for channel in category.channels:
             if channel.name == f'ticket-{user.name}':
