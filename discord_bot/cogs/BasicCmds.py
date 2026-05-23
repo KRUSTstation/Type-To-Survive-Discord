@@ -38,11 +38,9 @@ class BasicCmds(commands.Cog):
     async def say(self, interaction: discord.Interaction, string: str):
         if not string: await interaction.response.send_message('String cannot be empty', ephemeral=True); return
 
-        msg = interaction.message
         channel = interaction.channel
 
-        channel.send(string)
-        msg.delete()
+        await channel.send(string)
 
         await interaction.response.send_message('Done', ephemeral=True)
 
