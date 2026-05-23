@@ -12,5 +12,6 @@ async def main():
     async with bot:
         await bot.load_extension("discord_bot.cogs.ModMail")
         await bot.load_extension("discord_bot.cogs.BasicCmds")
+        await bot.load_extension("discord_bot.cogs.ModCmds")
         
         await bot.start(TOKEN)

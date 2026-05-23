@@ -4,8 +4,9 @@ from discord import app_commands
 
 from random import choice
 
-from core.config import RESTRICTED_CMDS
-from core.restrictions import check_owner, owner_only
+from core.config import RESTRICTED_CMDS, MOD_CMDS
+from core.restrictions import check_owner, owner_only, check_mod
+
 class BasicCmds(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -20,7 +21,7 @@ class BasicCmds(commands.Cog):
         embed = discord.Embed(title='Help', color=discord.Color.red())
 
         for cmd in self.bot.tree.get_commands():
-            if cmd.name in RESTRICTED_CMDS and not check_owner(interaction.user.id):
+            if cmd.name in RESTRICTED_CMDS and not check_owner(interaction.user.id) or cmd.name in MOD_CMDS and check_mod(interaction.user):
                 continue
 
             embed.add_field(name=f"`/{cmd.name}`", value=cmd.description or "No description", inline=False)
