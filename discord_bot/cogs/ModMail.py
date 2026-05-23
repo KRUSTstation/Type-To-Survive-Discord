@@ -34,14 +34,14 @@ class ModMail(commands.Cog):
     async def report_setup(self, interaction: discord.Interaction):
         channel = interaction.channel
 
-        embed = discord.Embed(title='Make a suggestion', color=discord.Color.blurple())
+        embed = discord.Embed(title='Make a ticket', color=discord.Color.blurple())
         embed.add_field(name='Instructions', value=(
-                        '1. _Press the `Report` button_\n'
+                        '1. _Press the button_\n'
                         '2. _A ticket will open for you_\n'
-                        '3. _Interact with the assigned admin and explain your report_'
+                        '3. _Interact with the assigned moderator and explain your reason for opening a ticket_'
         ), inline=False)
 
-        embed.add_field(name='What do I report?', value='_Report any abuse admins/users and bugs in either the discord server or game_', inline=False)
+        embed.add_field(name='Why open a ticket?', value='_Report any abuse admins/users and bugs/unintended features in either the discord server or game_\nFeel free to either open a ticket or ping a mod if you need any other help.', inline=False)
         await channel.send(embed=embed, view=report.ReportButton())
         await interaction.response.send_message("Done!", ephemeral=True)
 

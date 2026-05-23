@@ -52,7 +52,7 @@ class ReportButton(PersistentView):
     def __init__(self):
         super().__init__()
 
-    @discord.ui.button(label='Report', style=discord.ButtonStyle.danger, custom_id='report_button_persist')
+    @discord.ui.button(label='Open a Ticket 🎟️', style=discord.ButtonStyle.danger, custom_id='report_button_persist')
     async def report_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
         user = interaction.user
         guild = interaction.guild
