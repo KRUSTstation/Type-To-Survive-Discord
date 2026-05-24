@@ -5,9 +5,9 @@ import asyncio
 from random import choice
 
 from core.persist import PersistentView
+from core.config import MODERATOR_ROLEID
 
 TICKET_CATEGORY = 1507235813287792720
-MODERATOR_ROLE = 1502960657069244507
 
 async def is_ticket(interaction: discord.Interaction):
     channel = interaction.channel
@@ -26,13 +26,14 @@ class Confirm(discord.ui.View):
     
     @discord.ui.button(label='Confirm', style=discord.ButtonStyle.success)
     async def confirm_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
-        if not await is_ticket(interaction):
-            await interaction.response.send_message(content='This is not a ticket!', ephemeral=True)
-            return
+        # if not await is_ticket(interaction) :
+        #     await interaction.response.send_message(content='This is not valid channel', ephemeral=True)
+        #     return
         
         channel = interaction.channel
         cur_time = 3
         msg = await channel.send(content=f'Closing in {cur_time}')
+        await interaction.response.send_message('Closing now!', ephemeral=True)
 
         for i in range(cur_time-1, -1, -1):
             await asyncio.sleep(1)
@@ -57,7 +58,7 @@ class ReportButton(PersistentView):
         user = interaction.user
         guild = interaction.guild
         category = guild.get_channel(TICKET_CATEGORY)
-        mod_role = guild.get_role(MODERATOR_ROLE)
+        mod_role = guild.get_role(MODERATOR_ROLEID)
         assigned_mod = choice([user for user in mod_role.members])
         while assigned_mod == user:
             assigned_mod = choice([user for user in mod_role.members])

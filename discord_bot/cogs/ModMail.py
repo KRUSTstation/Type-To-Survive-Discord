@@ -9,9 +9,14 @@ class ModMail(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @app_commands.command(name='close_ticket', description='Closes the current ticket')
-    async def close_ticket(self, interaction: discord.Interaction):
-        await report.close_ticket(interaction)
+    @app_commands.command(name='close', description='Depending on the channel, this will close it. (eg. tickets/suggestion threads)')
+    async def close(self, interaction: discord.Interaction):
+        if await report.is_ticket(interaction): # ticket
+            await report.close_ticket(interaction)
+        elif await suggestion.is_suggestion(interaction): # suggestion
+            await suggestion.close_suggestion(interaction)
+        else:
+            await interaction.response.send_message('This is not a valid channel to close', ephemeral=True)
 
     @app_commands.command(name='suggestion_setup', description='Sets up the suggestion prompt')
     @owner_only()

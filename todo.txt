@@ -1,2 +1,1 @@
 1. suggestion cooldown
-2. delete suggestion threads

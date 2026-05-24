@@ -1,10 +1,29 @@
 import discord
 from discord.ext import commands
 
-from core.persist import PersistentView 
+from core.persist import PersistentView
+from core.config import MODERATOR_ROLEID
+from .report import Confirm
 
 SUGGESTION_ADMIN_CHANNEL = 1506858865915068477
 SUGGESTION_FORUM = 1506883312063348797
+
+async def is_suggestion(interaction: discord.Interaction):
+    if isinstance(interaction.channel, discord.Thread) and interaction.channel.parent.id == SUGGESTION_FORUM and int(interaction.channel.name.split(' ')[-1].strip('<>@')) == interaction.user.id:
+        return True
+    
+    for role in interaction.user.roles:
+        if role.id == MODERATOR_ROLEID:
+            return True
+        
+    return False
+
+async def close_suggestion(interaction: discord.Interaction):
+    if not await is_suggestion(interaction):
+        await interaction.response.send_message(content='This is not part of the suggestion forum', ephemeral=True)
+        return
+    
+    await interaction.response.send_message(content='Are you sure? You will lose all data in this thread.', view=Confirm(), ephemeral=True)
 
 class SuggestButton(PersistentView):
     def __init__(self): 
