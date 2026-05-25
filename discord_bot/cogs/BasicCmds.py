@@ -5,7 +5,7 @@ from discord import app_commands
 from random import choice
 
 from core.config import RESTRICTED_CMDS, MOD_CMDS
-from core.restrictions import check_owner, owner_only, check_mod
+from core.restrictions import check_owner, check_mod, mod_only
 
 class BasicCmds(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -35,7 +35,7 @@ class BasicCmds(commands.Cog):
         await interaction.response.send_message(choice(emoticons))
 
     @app_commands.command(name='say', description="Repeat after me!!")
-    @owner_only()
+    @mod_only()
     async def say(self, interaction: discord.Interaction, string: str):
         if not string: await interaction.response.send_message('String cannot be empty', ephemeral=True); return
 
@@ -43,7 +43,7 @@ class BasicCmds(commands.Cog):
 
         await channel.send(string)
 
-        await interaction.response.send_message('Done', ephemeral=True)
+        await interaction.response.defer()
 
 async def setup(bot):   
     await bot.add_cog(BasicCmds(bot))
