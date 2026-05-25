@@ -13,4 +13,6 @@ RESTRICTED_CMDS = {'suggestion_setup', 'report_setup'}
 MODERATOR_ROLEID = 1502960657069244507
 MOD_CMDS = {'mute', 'kick', 'say'}
 
+SUGGESTION_COOLDOWN = 60 # minutes
+
 DISCORD_TOKEN = os.getenv('BOT_TOKEN')

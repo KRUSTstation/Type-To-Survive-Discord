@@ -1,12 +1,15 @@
 import discord
 from discord.ext import commands
+import datetime
 
 from core.persist import PersistentView
-from core.config import MODERATOR_ROLEID
+from core.config import MODERATOR_ROLEID, SUGGESTION_COOLDOWN
 from .report import Confirm
 
 SUGGESTION_ADMIN_CHANNEL = 1506858865915068477
 SUGGESTION_FORUM = 1506883312063348797
+
+_suggestion_cooldowns = {}
 
 async def is_suggestion(interaction: discord.Interaction):
     if isinstance(interaction.channel, discord.Thread) and interaction.channel.parent.id == SUGGESTION_FORUM and int(interaction.channel.name.split(' ')[-1].strip('<>@')) == interaction.user.id:
@@ -31,6 +34,10 @@ class SuggestButton(PersistentView):
 
     @discord.ui.button(label='Suggest', style=discord.ButtonStyle.blurple, custom_id='suggest_button_persistent')
     async def button_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if _suggestion_cooldowns.get(interaction.user.name) and _suggestion_cooldowns[interaction.user.name] >= datetime.datetime.now():
+            await interaction.response.send_message(f'You cannot make a suggestion for another {int((_suggestion_cooldowns[interaction.user.name] - datetime.datetime.now()).total_seconds() // 60)} minutes', ephemeral=True)
+            return
+
         await interaction.response.send_modal(SuggestModal())
 
 class ApproveButton(PersistentView):
@@ -122,6 +129,8 @@ class SuggestModal(discord.ui.Modal, title="Suggestion"):
         channel = interaction.client.get_channel(SUGGESTION_ADMIN_CHANNEL)
 
         await channel.send(embed=embed, view=ApproveButton())
+
+        _suggestion_cooldowns[interaction.user.name] = datetime.datetime.now() + datetime.timedelta(minutes=60)
 
         await interaction.response.send_message((
         f'Thanks for your suggestion!\n'
