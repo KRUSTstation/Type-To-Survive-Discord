@@ -55,11 +55,19 @@ class ReportButton(PersistentView):
 
     @discord.ui.button(label='Open a Ticket 🎟️', style=discord.ButtonStyle.danger, custom_id='report_button_persist')
     async def report_callback(self, interaction: discord.Interaction, button: discord.ui.Button):
+        all_offline = False
+
         user = interaction.user
         guild = interaction.guild
         category = guild.get_channel(TICKET_CATEGORY)
         mod_role = guild.get_role(MODERATOR_ROLEID)
-        assigned_mod = choice([guy for guy in mod_role.members if guy.status != discord.Status.offline and guy.status != discord.Status.idle])
+        av_mods = [guy for guy in mod_role.members if guy.status != discord.Status.offline and guy.status != discord.Status.idle]
+        if not av_mods or len(av_mods) <= 0:
+            av_mods = [guy for guy in mod_role.members]
+            all_offline = True
+
+        assigned_mod = choice(av_mods)
+        
         while assigned_mod == user:
             assigned_mod = choice([user for user in mod_role.members])
 
@@ -73,3 +81,5 @@ class ReportButton(PersistentView):
         await interaction.response.send_message(content=f'I have made a channel for you at {channel.mention}', ephemeral=True)
 
         await channel.send(content=f'Hi {user.mention}, this is your ticket. {assigned_mod.mention} is the assigned mod for this ticket.', view=Close())
+        if all_offline:
+            await channel.send(content=f'None of the mods are available right now so please be patient and wait for a reply.') 

@@ -1,2 +1,1 @@
 1. suggestion cooldown
-2. account for the case when all mods are idle/offline
