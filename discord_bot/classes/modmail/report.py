@@ -59,7 +59,7 @@ class ReportButton(PersistentView):
         guild = interaction.guild
         category = guild.get_channel(TICKET_CATEGORY)
         mod_role = guild.get_role(MODERATOR_ROLEID)
-        assigned_mod = choice([user for user in mod_role.members])
+        assigned_mod = choice([guy for guy in mod_role.members if guy.status != discord.Status.offline and guy.status != discord.Status.idle])
         while assigned_mod == user:
             assigned_mod = choice([user for user in mod_role.members])
 
