@@ -39,11 +39,11 @@ class BasicCmds(commands.Cog):
     async def say(self, interaction: discord.Interaction, string: str):
         if not string: await interaction.response.send_message('String cannot be empty', ephemeral=True); return
 
-        channel = interaction.channel
-
-        await channel.send(string)
-
         await interaction.response.defer()
+
+        channel = interaction.channel
+        
+        await channel.send(string)
 
 async def setup(bot):   
     await bot.add_cog(BasicCmds(bot))
