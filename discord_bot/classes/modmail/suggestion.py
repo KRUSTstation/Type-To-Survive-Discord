@@ -12,12 +12,15 @@ SUGGESTION_FORUM = 1506883312063348797
 _suggestion_cooldowns = {}
 
 async def is_suggestion(interaction: discord.Interaction):
-    if isinstance(interaction.channel, discord.Thread) and interaction.channel.parent.id == SUGGESTION_FORUM and int(interaction.channel.name.split(' ')[-1].strip('<>@')) == interaction.user.id:
+    if not isinstance(interaction.channel, discord.Thread) or not interaction.channel.parent.id == SUGGESTION_FORUM:
+        return False
+    
+    if int(interaction.channel.name.split(' ')[-1].strip('<>@')) == interaction.user.id:
         return True
     
     for role in interaction.user.roles:
         if role.id == MODERATOR_ROLEID:
-            return True
+            return True 
         
     return False
 
@@ -130,7 +133,7 @@ class SuggestModal(discord.ui.Modal, title="Suggestion"):
 
         await channel.send(embed=embed, view=ApproveButton())
 
-        _suggestion_cooldowns[interaction.user.name] = datetime.datetime.now() + datetime.timedelta(minutes=60)
+        _suggestion_cooldowns[interaction.user.name] = datetime.datetime.now() + datetime.timedelta(minutes=SUGGESTION_COOLDOWN)
 
         await interaction.response.send_message((
         f'Thanks for your suggestion!\n'
