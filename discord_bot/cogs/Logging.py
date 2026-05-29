@@ -27,7 +27,18 @@ class Logging(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message: discord.Message):
-        
+        member = message.author
+        channel = message.channel
+
+        if channel.id in [LOGGING_CHANNEL, PRIVATE_LOGGING_CHANNEL]: return
+
+        embed = discord.Embed(title='Message Sent')
+
+        embed.add_field(name='Author', value=member.mention)
+        embed.add_field(name='Channel sent', value=channel.mention)
+        embed.add_field(name='Message', value=message.content)
+
+        await send_log(message.guild, embed)
 
 class PrivateLogging(commands.Cog):
     def __init__(self, bot: commands.Bot):
