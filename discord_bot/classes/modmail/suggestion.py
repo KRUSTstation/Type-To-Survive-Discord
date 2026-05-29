@@ -118,7 +118,7 @@ class SuggestModal(discord.ui.Modal, title="Suggestion"):
     description = discord.ui.TextInput(
         label="Your description here",
         style=discord.TextStyle.paragraph,
-        placeholder="Type description here... Make it as descriptive as possible so people understand what you want",
+        placeholder="Type description here... Make it as descriptive as possible so others understand what you want",
         required=True,
         max_length=4000
     )
