@@ -30,15 +30,59 @@ class Logging(commands.Cog):
         member = message.author
         channel = message.channel
 
-        if channel.id in [LOGGING_CHANNEL, PRIVATE_LOGGING_CHANNEL]: return
+        if channel.id in [PRIVATE_LOGGING_CHANNEL] or member == message.author.bot: return
 
         embed = discord.Embed(title='Message Sent')
 
+        embed.add_field(name='Message', value=message.content)
         embed.add_field(name='Author', value=member.mention)
         embed.add_field(name='Channel sent', value=channel.mention)
-        embed.add_field(name='Message', value=message.content)
 
-        await send_log(message.guild, embed)
+        if channel.id in [LOGGING_CHANNEL]:
+            await send_private_log(message.guild, embed)
+        else:
+            await send_log(message.guild, embed)
+
+    @commands.Cog.listener()
+    async def on_message_delete(self, message: discord.Message):
+        member = message.author
+        channel = message.channel
+
+        if channel.id in [PRIVATE_LOGGING_CHANNEL]: return
+
+        async for entry in message.guild.audit_logs(limit=1, action=discord.AuditLogAction.message_delete):
+            if entry.user == message.author.bot: return
+
+            embed = discord.Embed(title='Message deleted')
+            
+            embed.add_field(name='Message', value=message.content)
+            embed.add_field(name='Author', value=member.mention)
+            embed.add_field(name='Deleted by', value=entry.user.mention)
+            embed.add_field(name='Channel', value=channel.mention)
+
+        if channel.id in [LOGGING_CHANNEL]:
+            await send_private_log(message.guild, embed)
+        else:
+            await send_log(message.guild, embed)
+
+    @commands.Cog.listener()
+    async def on_message_edit(self, before: discord.Message, after: discord.Message):
+        member = before.author
+        channel = before.channel
+
+        if channel.id in [PRIVATE_LOGGING_CHANNEL] or member == before.author.bot: return
+
+        embed = discord.Embed(title='Message edited')
+        
+        embed.add_field(name='Before', value=before.content)
+        embed.add_field(name='After', value=after.content)
+        embed.add_field(name='Author', value=member.mention)
+        embed.add_field(name='Channel', value=channel.mention)
+
+        if channel.id in [LOGGING_CHANNEL]:
+            await send_private_log(before.guild, embed)
+        else:
+            await send_log(before.guild, embed)
 
 class PrivateLogging(commands.Cog):
     def __init__(self, bot: commands.Bot):
